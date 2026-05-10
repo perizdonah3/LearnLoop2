@@ -13,7 +13,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -21,7 +20,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.periz.learnloop.navigation.ROUT_HOME
-import com.periz.learnloop.navigation.ROUT_LOGIN
 import com.periz.learnloop.ui.theme.Pink80
 
 data class CommunityPost(
@@ -43,27 +41,13 @@ fun StudentCommunityScreen(navController: NavController) {
     )
 
     Scaffold(
-        bottomBar = {
-            BottomAppBar(containerColor = Color.White) {
-                IconButton(onClick = { navController.navigate(ROUT_HOME) }) {
-                    Icon(Icons.Default.Home, contentDescription = "Home", tint = Color.Black)
-                }
-
-                IconButton(onClick = { }) {
-                    Icon(Icons.Default.Groups, contentDescription = "Community", tint = Color.Black)
-                }
-
-                IconButton(onClick = { navController.navigate(ROUT_LOGIN) }) {
-                    Icon(Icons.Default.Settings, contentDescription = "Settings", tint = Color.Black)
-                }
-            }
-        }
+        containerColor = Pink80   // background stays same
     ) { padding ->
 
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(color = Pink80) // ✅ white background
+                .background(Pink80)
                 .padding(padding)
                 .padding(16.dp)
         ) {
@@ -79,13 +63,10 @@ fun StudentCommunityScreen(navController: NavController) {
                 }
 
                 Row {
-                    IconButton(onClick = { }) {
 
-                    }
+                    IconButton(onClick = { }) { }
 
-                    IconButton(onClick = { }) {
-
-                    }
+                    IconButton(onClick = { }) { }
                 }
             }
 
@@ -105,7 +86,6 @@ fun StudentCommunityScreen(navController: NavController) {
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // ✅ Replaced gradient with black card
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -166,7 +146,7 @@ fun StudentCommunityScreen(navController: NavController) {
                             Row(verticalAlignment = Alignment.CenterVertically) {
                                 Surface(
                                     shape = CircleShape,
-                                    color = Color.LightGray, // ✅ avatar bg
+                                    color = Color.LightGray,
                                     modifier = Modifier.size(40.dp)
                                 ) {
                                     Box(contentAlignment = Alignment.Center) {

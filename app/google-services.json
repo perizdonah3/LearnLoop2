@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "856389849124",
+    "firebase_url": "https://learnloop-3a30f-default-rtdb.firebaseio.com",
     "project_id": "learnloop-3a30f",
     "storage_bucket": "learnloop-3a30f.firebasestorage.app"
   },
@@ -10,6 +11,25 @@
         "mobilesdk_app_id": "1:856389849124:android:932c70dd44d69e628c88b1",
         "android_client_info": {
           "package_name": "com.periz.learnloop"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDY8NqBVYZoRmHhvqD8KihrUqeD03tMNPw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:856389849124:android:0d825014586f271b8c88b1",
+        "android_client_info": {
+          "package_name": "learn.periz.learnloop"
         }
       },
       "oauth_client": [],

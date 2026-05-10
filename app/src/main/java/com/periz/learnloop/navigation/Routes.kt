@@ -4,20 +4,31 @@ const val ROUT_SPLASH = "splash"
 const val ROUT_INTRO = "intro"
 const val ROUT_LOGIN = "login"
 const val ROUT_REGISTER = "register"
+
 const val ROUT_HOME = "home"
+
 const val ROUT_PROFILE = "profile"
 const val ROUT_SETTINGS = "settings"
+
 const val ROUT_PLANNER = "planner"
 const val ROUT_NOTEVAULT = "notevault"
+
+const val ROUT_NOTESSCREEN = "notes_screen"
+
 const val ROUT_STUDYMATERIALS = "study_materials"
 const val ROUT_PROGRESSTRACKER = "progress_tracker"
+
 const val ROUT_QUIZ = "quiz"
 const val ROUT_QUIZRESULTS = "quiz_results"
+
 const val ROUT_STUDYTIMER = "study_timer"
+
 const val ROUT_SUBJECT = "subject"
 const val ROUT_SUBJECTDETAILS = "subject_details"
+
 const val ROUT_CAREERGUIDANCE = "career_guidance"
 const val ROUT_STUDENTCOMMUNITY = "student_community"
 const val ROUT_WELLNESS = "wellness"
+
 const val ROUT_ACHIEVEMENTS = "achievements"
 const val ROUT_STUDYSTREAK = "study_streak"

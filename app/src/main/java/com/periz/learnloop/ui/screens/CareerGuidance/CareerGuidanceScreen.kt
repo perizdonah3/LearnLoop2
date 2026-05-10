@@ -10,7 +10,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Description
-import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.MenuBook
 import androidx.compose.material.icons.filled.Psychology
 import androidx.compose.material.icons.filled.School
@@ -28,7 +27,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.periz.learnloop.navigation.ROUT_HOME
 import com.periz.learnloop.ui.theme.Pink80
 
 data class CareerFeature(
@@ -77,10 +75,6 @@ fun CareerHubScreen(navHostController: NavHostController) {
                     },
                     tint = Color.Black
                 )
-
-
-
-
             }
 
             // Header text
@@ -150,21 +144,29 @@ fun CareerHubScreen(navHostController: NavHostController) {
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
                 contentPadding = PaddingValues(bottom = 12.dp)
             ) {
+
                 items(features) { feature ->
+
+                    // 🔥 ONLY CHANGE: CARD IS NOW WHITE
                     Card(
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(155.dp)
                             .clickable { },
                         shape = RoundedCornerShape(20.dp),
+                        colors = CardDefaults.cardColors(
+                            containerColor = Color.White   // ✅ FIX HERE
+                        ),
                         elevation = CardDefaults.cardElevation(5.dp)
                     ) {
+
                         Column(
                             modifier = Modifier
                                 .fillMaxSize()
                                 .padding(14.dp),
                             horizontalAlignment = Alignment.Start
                         ) {
+
                             Icon(
                                 imageVector = feature.icon,
                                 contentDescription = feature.title,
@@ -176,7 +178,8 @@ fun CareerHubScreen(navHostController: NavHostController) {
 
                             Text(
                                 text = feature.title,
-                                style = MaterialTheme.typography.titleMedium
+                                style = MaterialTheme.typography.titleMedium,
+                                color = Color.Black
                             )
 
                             Spacer(modifier = Modifier.height(6.dp))

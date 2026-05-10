@@ -35,62 +35,166 @@ data class FeatureItem(
 fun HomeScreen(navController: NavController) {
 
     val features = listOf(
-        FeatureItem("Study Planner", Icons.Default.EventNote, ROUT_PLANNER),
-        FeatureItem("Notes Vault", Icons.Default.Folder, ROUT_NOTEVAULT),
-        FeatureItem("Study Materials", Icons.Default.MenuBook, ROUT_STUDYMATERIALS),
-        FeatureItem("Progress Tracker", Icons.Default.ShowChart, ROUT_PROGRESSTRACKER),
-        FeatureItem("Quiz", Icons.Default.Quiz, ROUT_QUIZ),
-        FeatureItem("Quiz Results", Icons.Default.Assessment, ROUT_QUIZRESULTS),
-        FeatureItem("Study Timer", Icons.Default.Timer, ROUT_STUDYTIMER),
-        FeatureItem("Subjects", Icons.Default.School, ROUT_SUBJECT),
-        FeatureItem("Subject Details", Icons.Default.Info, ROUT_SUBJECTDETAILS),
-        FeatureItem("Career Hub", Icons.Default.Work, ROUT_CAREERGUIDANCE),
-        FeatureItem("Community", Icons.Default.Groups, ROUT_STUDENTCOMMUNITY),
-        FeatureItem("Wellness", Icons.Default.SelfImprovement, ROUT_WELLNESS),
-        FeatureItem("Achievements", Icons.Default.EmojiEvents, ROUT_ACHIEVEMENTS),
-        FeatureItem("Study Streak", Icons.Default.LocalFireDepartment, ROUT_HOME)
+
+        FeatureItem(
+            "Study Planner",
+            Icons.Default.EventNote,
+            ROUT_PLANNER
+        ),
+
+        FeatureItem(
+            "Notes Vault",
+            Icons.Default.Folder,
+            ROUT_NOTEVAULT
+        ),
+
+
+        FeatureItem(
+            "Notes",
+            Icons.Default.Edit,
+            ROUT_NOTESSCREEN
+        ),
+
+        FeatureItem(
+            "Study Materials",
+            Icons.Default.MenuBook,
+            ROUT_STUDYMATERIALS
+        ),
+
+        FeatureItem(
+            "Progress Tracker",
+            Icons.Default.ShowChart,
+            ROUT_PROGRESSTRACKER
+        ),
+
+        FeatureItem(
+            "Quiz",
+            Icons.Default.Quiz,
+            ROUT_QUIZ
+        ),
+
+        FeatureItem(
+            "Quiz Results",
+            Icons.Default.Assessment,
+            ROUT_QUIZRESULTS
+        ),
+
+        FeatureItem(
+            "Study Timer",
+            Icons.Default.Timer,
+            ROUT_STUDYTIMER
+        ),
+
+        FeatureItem(
+            "Subjects",
+            Icons.Default.School,
+            ROUT_SUBJECT
+        ),
+
+        FeatureItem(
+            "Subject Details",
+            Icons.Default.Info,
+            ROUT_SUBJECTDETAILS
+        ),
+
+        FeatureItem(
+            "Career Hub",
+            Icons.Default.Work,
+            ROUT_CAREERGUIDANCE
+        ),
+
+        FeatureItem(
+            "Community",
+            Icons.Default.Groups,
+            ROUT_STUDENTCOMMUNITY
+        ),
+
+        FeatureItem(
+            "Wellness",
+            Icons.Default.SelfImprovement,
+            ROUT_WELLNESS
+        ),
+
+        FeatureItem(
+            "Achievements",
+            Icons.Default.EmojiEvents,
+            ROUT_ACHIEVEMENTS
+        ),
+
+        FeatureItem(
+            "Study Streak",
+            Icons.Default.LocalFireDepartment,
+            ROUT_STUDYSTREAK
+        )
     )
 
     Scaffold(
         containerColor = Pink80,
+
         bottomBar = {
-            NavigationBar(containerColor = Color.White) {
+
+            NavigationBar(
+                containerColor = Color.White
+            ) {
 
                 NavigationBarItem(
                     selected = true,
+
                     onClick = {
                         navController.navigate(ROUT_HOME) {
-                            popUpTo(ROUT_HOME) { inclusive = true }
+                            popUpTo(ROUT_HOME) {
+                                inclusive = true
+                            }
+
                             launchSingleTop = true
                         }
                     },
-                    icon = { Icon(Icons.Default.Home, null) },
-                    label = { Text("Home") }
+
+                    icon = {
+                        Icon(Icons.Default.Home, null)
+                    },
+
+                    label = {
+                        Text("Home")
+                    }
                 )
 
                 NavigationBarItem(
                     selected = false,
+
                     onClick = {
-                        navController.navigate(ROUT_NOTEVAULT) {
+                        navController.navigate(ROUT_NOTESSCREEN) {
                             launchSingleTop = true
                         }
                     },
-                    icon = { Icon(Icons.Default.Search, null) },
-                    label = { Text("Notes") }
+
+                    icon = { Icon(Icons.Default.Edit, contentDescription = "Notes") },
+
+                    label = {
+                        Text("Notes")
+                    }
                 )
 
                 NavigationBarItem(
                     selected = false,
+
                     onClick = {
                         navController.navigate(ROUT_PROFILE) {
                             launchSingleTop = true
                         }
                     },
-                    icon = { Icon(Icons.Default.Person, null) },
-                    label = { Text("Profile") }
+
+                    icon = {
+                        Icon(Icons.Default.Person, null)
+                    },
+
+                    label = {
+                        Text("Profile")
+                    }
                 )
             }
         }
+
     ) { paddingValues ->
 
         Column(
@@ -105,20 +209,21 @@ fun HomeScreen(navController: NavController) {
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
+
                 horizontalArrangement = Arrangement.SpaceBetween,
+
                 verticalAlignment = Alignment.CenterVertically
             ) {
+
                 Icon(
                     imageVector = Icons.Default.Menu,
                     contentDescription = null,
                     tint = Color.Black,
+
                     modifier = Modifier.clickable {
                         navController.navigate(ROUT_SETTINGS)
                     }
                 )
-
-
-
             }
 
             Spacer(modifier = Modifier.height(12.dp))
@@ -140,11 +245,19 @@ fun HomeScreen(navController: NavController) {
 
             Card(
                 modifier = Modifier.fillMaxWidth(),
+
                 shape = RoundedCornerShape(24.dp),
-                colors = CardDefaults.cardColors(containerColor = Color.LightGray)
+
+                colors = CardDefaults.cardColors(
+                    containerColor = Color.LightGray
+                )
 
             ) {
-                Column(modifier = Modifier.padding(20.dp)) {
+
+                Column(
+                    modifier = Modifier.padding(20.dp)
+                ) {
+
                     Text(
                         text = "Today's Goal",
                         fontWeight = FontWeight.Bold,
@@ -165,12 +278,21 @@ fun HomeScreen(navController: NavController) {
 
             LazyVerticalGrid(
                 columns = GridCells.Fixed(2),
+
                 modifier = Modifier.weight(1f),
+
                 horizontalArrangement = Arrangement.spacedBy(14.dp),
+
                 verticalArrangement = Arrangement.spacedBy(14.dp)
+
             ) {
+
                 items(features) { item ->
-                    FeatureCard(item = item, navController = navController)
+
+                    FeatureCard(
+                        item = item,
+                        navController = navController
+                    )
                 }
             }
         }
@@ -187,20 +309,31 @@ fun FeatureCard(
         modifier = Modifier
             .fillMaxWidth()
             .height(170.dp)
+
             .clickable {
                 navController.navigate(item.route)
             },
+
         shape = RoundedCornerShape(22.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White)
+
+        colors = CardDefaults.cardColors(
+            containerColor = Color.White
+        )
+
     ) {
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
+
                 .clickable {
                     navController.navigate(item.route)
                 }
+
                 .padding(18.dp),
+
             verticalArrangement = Arrangement.Center,
+
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 

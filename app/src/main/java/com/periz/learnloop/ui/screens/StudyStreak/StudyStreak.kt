@@ -139,7 +139,7 @@ fun StudyStreakScreen(navController: NavController) {
                     Spacer(modifier = Modifier.height(6.dp))
 
                     Text(
-                        text = "Keep studying daily to grow your streak 🔥",
+                        text = "Keep studying daily to grow your streak ",
                         fontSize = 15.sp,
                         color = Color.Black
                     )

@@ -91,7 +91,7 @@ fun QuizScreen(navController: NavHostController) {
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(22.dp),
-                colors = CardDefaults.cardColors(containerColor = Color.White),
+                colors = CardDefaults.cardColors(containerColor = Color.LightGray),
                 elevation = CardDefaults.cardElevation(6.dp)
             ) {
                 Column(
