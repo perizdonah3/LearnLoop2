@@ -1,5 +1,6 @@
 package com.periz.learnloop.ui.screens.Achievements
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -15,12 +16,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.periz.learnloop.R
 import com.periz.learnloop.ui.theme.Pink80
 
 data class Achievement(
@@ -33,10 +37,18 @@ data class Achievement(
 fun AchievementScreen(navController: NavController) {
 
     val achievements = listOf(
+
         Achievement("Quiz Master", "Completed 10 quizzes", 120),
         Achievement("Study Streak", "Studied 7 days in a row", 200),
         Achievement("Top Performer", "Scored above 90%", 150),
-        Achievement("Task Crusher", "Finished 20 tasks", 180)
+        Achievement("Task Crusher", "Finished 20 tasks", 180),
+
+        // NEW ACHIEVEMENT
+        Achievement(
+            "Critical Assessments",
+            "Successfully completed all critical assessments",
+            250
+        )
     )
 
     Scaffold(
@@ -51,7 +63,7 @@ fun AchievementScreen(navController: NavController) {
                 .padding(horizontal = 16.dp, vertical = 8.dp)
         ) {
 
-            // ✅ HEADER (fixed alignment)
+            // HEADER
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -76,9 +88,9 @@ fun AchievementScreen(navController: NavController) {
                 )
             }
 
-            // Achievement List
+            // LIST
             LazyColumn(
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier.weight(1f),
                 contentPadding = PaddingValues(bottom = 12.dp),
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
@@ -86,6 +98,17 @@ fun AchievementScreen(navController: NavController) {
                     AchievementCard(item)
                 }
             }
+
+            // BOTTOM IMAGE (UNCHANGED)
+            Image(
+                painter = painterResource(id = R.drawable.img_3),
+                contentDescription = null,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(200.dp)
+                    .padding(top = 20.dp),
+                contentScale = ContentScale.Crop
+            )
         }
     }
 }
@@ -113,7 +136,6 @@ fun AchievementCard(item: Achievement) {
                     .background(Color.LightGray, CircleShape),
                 contentAlignment = Alignment.Center
             ) {
-
                 Icon(
                     imageVector = Icons.Default.Star,
                     contentDescription = "Star",
@@ -123,9 +145,7 @@ fun AchievementCard(item: Achievement) {
 
             Spacer(modifier = Modifier.width(12.dp))
 
-            Column(
-                modifier = Modifier.weight(1f)
-            ) {
+            Column(modifier = Modifier.weight(1f)) {
 
                 Text(
                     text = item.title,
@@ -142,8 +162,6 @@ fun AchievementCard(item: Achievement) {
                     fontSize = 14.sp
                 )
             }
-
-            Spacer(modifier = Modifier.width(8.dp))
 
             Text(
                 text = "+${item.points}",

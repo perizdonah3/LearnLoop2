@@ -36,7 +36,7 @@ import com.periz.learnloop.ui.screens.SubjectDetails.SubjectDetailsScreen
 fun AppNavHost(
     modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController(),
-    startDestination: String = ROUT_REGISTER
+    startDestination: String = ROUT_SPLASH
 ) {
 
     NavHost(

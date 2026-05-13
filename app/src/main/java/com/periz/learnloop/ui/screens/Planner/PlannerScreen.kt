@@ -1,5 +1,6 @@
 package com.periz.learnloop.ui.screens.Planner
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -9,41 +10,46 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.periz.learnloop.navigation.ROUT_HOME
+import com.periz.learnloop.R
 import com.periz.learnloop.ui.theme.Pink80
 
 data class PlannerTask(
     val title: String,
     val subject: String,
     val time: String,
-    val completed: Boolean
+    val image: Int,
+    var completed: Boolean
 )
 
 @Composable
 fun PlannerScreen(navController: NavController) {
 
-    val tasks = listOf(
-        PlannerTask("Revise Algebra", "Mathematics", "8:00 AM", true),
-        PlannerTask("Physics Assignment", "Physics", "10:30 AM", false),
-        PlannerTask("Coding Practice", "Computer Science", "1:00 PM", false),
-        PlannerTask("Biology Notes Review", "Biology", "4:00 PM", true),
-        PlannerTask("Chemistry Lab Prep", "Chemistry", "6:30 PM", false)
-    )
+    val tasks = remember {
+        mutableStateListOf(
+            PlannerTask("Revise Calculus", "Mathematics", "8:00 AM", R.drawable.img_4, true),
+            PlannerTask("Physics Concepts", "Physics", "10:30 AM", R.drawable.img_5, false),
+            PlannerTask("Coding Practice", "Computer Science", "1:00 PM", R.drawable.img_6, false),
+            PlannerTask("Biology Revision", "Biology", "4:00 PM", R.drawable.img_7, true),
+            PlannerTask("Chemistry Experiments", "Chemistry", "6:30 PM", R.drawable.img_8, false)
+        )
+    }
 
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(color = Pink80)
+            .background(Pink80)
             .systemBarsPadding()
             .padding(16.dp)
     ) {
@@ -63,10 +69,6 @@ fun PlannerScreen(navController: NavController) {
                 },
                 tint = Color.Black
             )
-
-
-
-
         }
 
         LazyColumn(
@@ -79,8 +81,7 @@ fun PlannerScreen(navController: NavController) {
                 Text(
                     text = "Study Planner",
                     color = Color.Black,
-                    fontSize = 28.sp,
-                    style = MaterialTheme.typography.headlineMedium
+                    fontSize = 28.sp
                 )
             }
 
@@ -92,57 +93,41 @@ fun PlannerScreen(navController: NavController) {
                 )
             }
 
-            // Grey progress card
             item {
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(
-                            brush = Brush.horizontalGradient(
-                                listOf(Color.LightGray, Color.LightGray)
-                            ),
-                            shape = RoundedCornerShape(22.dp)
-                        )
+                        .background(Color.LightGray, RoundedCornerShape(22.dp))
                         .padding(20.dp)
                 ) {
                     Column {
-                        Text(
-                            text = "Today's Progress",
-                            color = Color.Black,
-                            fontSize = 18.sp
-                        )
+                        Text("Today's Progress", color = Color.Black)
 
                         Spacer(modifier = Modifier.height(12.dp))
 
                         LinearProgressIndicator(
                             progress = { 0.6f },
                             modifier = Modifier.fillMaxWidth(),
-                            color = Color.White,
-                            trackColor = Color.Gray
+                            color = Color.Black
                         )
 
                         Spacer(modifier = Modifier.height(10.dp))
 
-                        Text(
-                            text = "3 of 5 tasks completed",
-                            color = Color.Black
-                        )
+                        Text("3 of 5 tasks completed", color = Color.Black)
                     }
                 }
             }
 
-            // Black button
             item {
                 Button(
-                    onClick = { },
+                    onClick = {
+                        navController.navigate("add_task") // ✅ ROUTE HOOK
+                    },
                     shape = RoundedCornerShape(16.dp),
                     modifier = Modifier.fillMaxWidth(),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Color.Black,
-                        contentColor = Color.Black
-                    )
+                    colors = ButtonDefaults.buttonColors(containerColor = Color.Black)
                 ) {
-                    Icon(Icons.Default.Add, contentDescription = "Add Task", tint = Color.White)
+                    Icon(Icons.Default.Add, contentDescription = null, tint = Color.White)
                     Spacer(modifier = Modifier.width(10.dp))
                     Text("Add New Study Task", color = Color.White)
                 }
@@ -152,54 +137,52 @@ fun PlannerScreen(navController: NavController) {
                 Text(
                     text = "Today's Schedule",
                     color = Color.Black,
-                    style = MaterialTheme.typography.titleLarge
+                    fontSize = 20.sp
                 )
             }
 
             items(tasks) { task ->
+
                 Card(
                     shape = RoundedCornerShape(18.dp),
-                    elevation = CardDefaults.cardElevation(5.dp),
                     modifier = Modifier.fillMaxWidth(),
                     colors = CardDefaults.cardColors(containerColor = Color.White)
                 ) {
-                    Row(
-                        modifier = Modifier.padding(16.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
 
-                        Checkbox(
-                            checked = task.completed,
-                            onCheckedChange = { },
-                            colors = CheckboxDefaults.colors(
-                                checkedColor = Color.Black,
-                                uncheckedColor = Color.Black,
-                                checkmarkColor = Color.White
-                            )
+                    Column {
+
+                        // ✅ IMAGE ADDED (no UI change, just inside card)
+                        Image(
+                            painter = painterResource(id = task.image),
+                            contentDescription = null,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(120.dp),
+                            contentScale = ContentScale.Crop
                         )
 
-                        Spacer(modifier = Modifier.width(10.dp))
+                        Row(
+                            modifier = Modifier
+                                .padding(16.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
 
-                        Column(modifier = Modifier.weight(1f)) {
-                            Text(
-                                text = task.title,
-                                color = Color.Black,
-                                style = MaterialTheme.typography.titleMedium
+                            Checkbox(
+                                checked = task.completed,
+                                onCheckedChange = {
+                                    task.completed = it
+                                }
                             )
-                            Text(
-                                text = task.subject,
-                                color = Color.Black,
-                                fontSize = 15.sp
-                            )
+
+                            Spacer(modifier = Modifier.width(10.dp))
+
+                            Column(modifier = Modifier.weight(1f)) {
+                                Text(task.title, color = Color.Black)
+                                Text(task.subject, color = Color.Black, fontSize = 14.sp)
+                            }
+
+                            Text(task.time, color = Color.Black)
                         }
-
-                        Spacer(modifier = Modifier.width(8.dp))
-
-                        Text(
-                            text = task.time,
-                            color = Color.Black,
-                            fontSize = 15.sp
-                        )
                     }
                 }
             }
@@ -207,8 +190,8 @@ fun PlannerScreen(navController: NavController) {
     }
 }
 
-@Preview(showBackground = true)
+@Preview
 @Composable
-fun PlannerScreenPreview() {
+fun PlannerPreview() {
     PlannerScreen(rememberNavController())
 }

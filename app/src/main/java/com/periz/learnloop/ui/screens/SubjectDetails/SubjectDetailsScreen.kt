@@ -1,5 +1,6 @@
 package com.periz.learnloop.ui.screens.SubjectDetails
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -12,32 +13,35 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.periz.learnloop.R
 import com.periz.learnloop.ui.theme.Pink80
 
 data class TopicItem(
     val title: String,
     val duration: String,
-    val difficulty: String
+    val difficulty: String,
+    val imageRes: Int
 )
 
 @Composable
 fun SubjectDetailsScreen(navController: NavHostController) {
 
     val topics = listOf(
-        TopicItem("Introduction to Kotlin", "20 mins", "Beginner"),
-        TopicItem("Variables and Data Types", "35 mins", "Beginner"),
-        TopicItem("Functions in Kotlin", "40 mins", "Intermediate"),
-        TopicItem("Jetpack Compose Basics", "50 mins", "Advanced"),
-        TopicItem("Navigation in Apps", "30 mins", "Intermediate")
+        TopicItem("Introduction to Kotlin", "20 mins", "Beginner", R.drawable.img_12),
+        TopicItem("Variables and Data Types", "35 mins", "Beginner", R.drawable.img_13),
+        TopicItem("Functions in Kotlin", "40 mins", "Intermediate", R.drawable.img_14),
+        TopicItem("Jetpack Compose Basics", "50 mins", "Advanced", R.drawable.img_15),
+        TopicItem("Navigation in Apps", "30 mins", "Intermediate", R.drawable.img_21)
     )
 
-    // ❌ Bottom navigation removed
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -61,20 +65,15 @@ fun SubjectDetailsScreen(navController: NavHostController) {
             }
 
             Row {
-                IconButton(onClick = { }) {
-
-                }
-
-                IconButton(onClick = { }) {
-
-                }
+                IconButton(onClick = { }) {}
+                IconButton(onClick = { }) {}
             }
         }
 
         Spacer(modifier = Modifier.height(12.dp))
 
         Text(
-            text = "Subject Details ",
+            text = "Subject Details",
             color = Color.Black,
             fontSize = 30.sp,
             fontWeight = FontWeight.Bold
@@ -84,6 +83,18 @@ fun SubjectDetailsScreen(navController: NavHostController) {
             text = "Explore all learning topics and master new skills",
             color = Color.Black,
             fontSize = 18.sp
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // Attractive top image
+        Image(
+            painter = painterResource(id = R.drawable.img_13),
+            contentDescription = null,
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(180.dp),
+            contentScale = ContentScale.Crop
         )
 
         Spacer(modifier = Modifier.height(18.dp))
@@ -144,11 +155,12 @@ fun TopicCard(topic: TopicItem) {
             verticalAlignment = Alignment.CenterVertically
         ) {
 
-            Icon(
-                imageVector = Icons.Default.PlayCircle,
+            Image(
+                painter = painterResource(id = topic.imageRes),
                 contentDescription = topic.title,
-                tint = Color.Black,
-                modifier = Modifier.size(38.dp)
+                modifier = Modifier
+                    .size(55.dp),
+                contentScale = ContentScale.Crop
             )
 
             Spacer(modifier = Modifier.width(14.dp))
@@ -172,7 +184,7 @@ fun TopicCard(topic: TopicItem) {
                 bookmarked = !bookmarked
             }) {
                 Icon(
-                    imageVector = Icons.Default.Bookmark,
+                    imageVector = if (bookmarked) Icons.Default.Bookmark else Icons.Default.BookmarkBorder,
                     contentDescription = "Save",
                     tint = Color.Black
                 )

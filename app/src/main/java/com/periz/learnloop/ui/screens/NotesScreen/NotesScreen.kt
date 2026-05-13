@@ -6,6 +6,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Save
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -18,6 +19,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.periz.learnloop.ui.theme.Pink80
 
 data class Note(
+    val id: String = "",
     val title: String = "",
     val content: String = ""
 )
@@ -32,64 +34,53 @@ fun NotesScreen(
 
     var title by remember { mutableStateOf("") }
     var content by remember { mutableStateOf("") }
+    var editingNoteId by remember { mutableStateOf("") }
 
     val notesList = remember { mutableStateListOf<Note>() }
 
     LaunchedEffect(Unit) {
-
         firestore.collection("notes")
             .addSnapshotListener { value, error ->
-
                 if (error != null) return@addSnapshotListener
 
                 notesList.clear()
 
                 value?.documents?.forEach { document ->
-
                     val note = Note(
+                        id = document.id,
                         title = document.getString("title") ?: "",
                         content = document.getString("content") ?: ""
                     )
-
                     notesList.add(note)
                 }
             }
     }
 
     Scaffold(
-
         topBar = {
-
             TopAppBar(
-
                 title = {
                     Text(
-                        text = "Notes",
+                        "Notes",
                         fontWeight = FontWeight.Bold,
                         color = Color.Black
                     )
                 },
-
                 navigationIcon = {
-
                     IconButton(onClick = onBackClick) {
-
                         Icon(
-                            imageVector = Icons.Default.ArrowBack,
-                            contentDescription = "Back",
+                            Icons.Default.ArrowBack,
+                            contentDescription = null,
                             tint = Color.Black
                         )
                     }
                 },
-
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = Pink80
                 )
             )
         },
-
         containerColor = Pink80
-
     ) { paddingValues ->
 
         Column(
@@ -100,21 +91,24 @@ fun NotesScreen(
         ) {
 
             Text(
-                text = "Create Note",
-                fontSize = 24.sp,
+                text = if (editingNoteId.isEmpty()) "Create Note" else "Edit Note",
+                fontSize = 26.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color.Black
             )
 
-            Spacer(modifier = Modifier.height(20.dp))
+            Spacer(modifier = Modifier.height(18.dp))
 
             OutlinedTextField(
                 value = title,
                 onValueChange = { title = it },
-                label = { Text("Title", color = Color.Black) },
+                label = { Text("Title") },
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(14.dp),
-                textStyle = LocalTextStyle.current.copy(color = Color.Black)
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedBorderColor = Color.Black,
+                    unfocusedBorderColor = Color.DarkGray
+                )
             )
 
             Spacer(modifier = Modifier.height(12.dp))
@@ -122,19 +116,21 @@ fun NotesScreen(
             OutlinedTextField(
                 value = content,
                 onValueChange = { content = it },
-                label = { Text("Content", color = Color.Black) },
+                label = { Text("Content") },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(120.dp),
                 shape = RoundedCornerShape(14.dp),
-                textStyle = LocalTextStyle.current.copy(color = Color.Black)
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedBorderColor = Color.Black,
+                    unfocusedBorderColor = Color.DarkGray
+                )
             )
 
             Spacer(modifier = Modifier.height(16.dp))
 
             Button(
                 onClick = {
-
                     if (title.isNotEmpty() && content.isNotEmpty()) {
 
                         val note = hashMapOf(
@@ -142,33 +138,27 @@ fun NotesScreen(
                             "content" to content
                         )
 
-                        firestore.collection("notes").add(note)
+                        if (editingNoteId.isNotEmpty()) {
+                            firestore.collection("notes")
+                                .document(editingNoteId)
+                                .update(note as Map<String, Any>)
+                            editingNoteId = ""
+                        } else {
+                            firestore.collection("notes").add(note)
+                        }
 
                         title = ""
                         content = ""
                     }
                 },
-
                 modifier = Modifier.fillMaxWidth(),
-
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color.Black
-                ),
-
-                shape = RoundedCornerShape(14.dp)
-
+                shape = RoundedCornerShape(14.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = Color.Black)
             ) {
-
-                Icon(
-                    imageVector = Icons.Default.Save,
-                    contentDescription = "Save",
-                    tint = Color.White
-                )
-
+                Icon(Icons.Default.Save, contentDescription = null, tint = Color.White)
                 Spacer(modifier = Modifier.width(8.dp))
-
                 Text(
-                    text = "Save Note",
+                    if (editingNoteId.isEmpty()) "Save Note" else "Update Note",
                     color = Color.White
                 )
             }
@@ -192,29 +182,48 @@ fun NotesScreen(
 
                     Card(
                         modifier = Modifier.fillMaxWidth(),
-                        shape = RoundedCornerShape(16.dp),
-                        colors = CardDefaults.cardColors(
-                            containerColor = Color(0xFFF5F5F5)
-                        )
+                        shape = RoundedCornerShape(18.dp),
+                        colors = CardDefaults.cardColors(containerColor = Color.White),
+                        elevation = CardDefaults.cardElevation(6.dp)
                     ) {
 
                         Column(
                             modifier = Modifier.padding(16.dp)
                         ) {
 
-                            Text(
-                                text = note.title,
-                                fontSize = 18.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = Color.Black
-                            )
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+
+                                Text(
+                                    text = note.title,
+                                    fontSize = 18.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = Color.Black
+                                )
+
+                                IconButton(
+                                    onClick = {
+                                        title = note.title
+                                        content = note.content
+                                        editingNoteId = note.id
+                                    }
+                                ) {
+                                    Icon(
+                                        Icons.Default.Edit,
+                                        contentDescription = null,
+                                        tint = Color.Black
+                                    )
+                                }
+                            }
 
                             Spacer(modifier = Modifier.height(6.dp))
 
                             Text(
                                 text = note.content,
                                 fontSize = 14.sp,
-                                color = Color.Black
+                                color = Color.DarkGray
                             )
                         }
                     }

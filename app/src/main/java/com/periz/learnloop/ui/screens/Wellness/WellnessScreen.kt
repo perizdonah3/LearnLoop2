@@ -1,32 +1,36 @@
 package com.periz.learnloop.ui.screens.Wellness
 
 import androidx.navigation.NavController
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.compose.rememberNavController
-import com.periz.learnloop.navigation.ROUT_HOME
-import com.periz.learnloop.navigation.ROUT_PROGRESSTRACKER
-import com.periz.learnloop.navigation.ROUT_STUDYTIMER
+import com.periz.learnloop.R
 import com.periz.learnloop.ui.theme.Pink80
 
 data class WellnessTip(
     val title: String,
     val description: String,
-    val icon: androidx.compose.ui.graphics.vector.ImageVector
+    val icon: androidx.compose.ui.graphics.vector.ImageVector,
+    val imageRes: Int
 )
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -34,13 +38,12 @@ data class WellnessTip(
 fun WellnessScreen(navController: NavController) {
 
     val tips = listOf(
-        WellnessTip("Focus Timer", "Use Pomodoro sessions to improve concentration.", Icons.Default.Timer),
-        WellnessTip("Mindful Breaks", "Take short breaks between study sessions.", Icons.Default.SelfImprovement),
-        WellnessTip("Healthy Habits", "Sleep well, hydrate, and stay active.", Icons.Default.Favorite),
-        WellnessTip("Stress Relief", "Practice breathing exercises during pressure.", Icons.Default.Spa)
+        WellnessTip("Focus Timer", "Use Pomodoro sessions to improve concentration.", Icons.Default.Timer, R.drawable.img_5),
+        WellnessTip("Mindful Breaks", "Take short breaks between study sessions.", Icons.Default.SelfImprovement, R.drawable.img_26),
+        WellnessTip("Healthy Habits", "Sleep well, hydrate, and stay active.", Icons.Default.Favorite, R.drawable.img_11),
+        WellnessTip("Stress Relief", "Practice breathing exercises during pressure.", Icons.Default.Spa, R.drawable.img_12)
     )
 
-    // ❌ Bottom navigation removed
     Scaffold { padding ->
 
         Column(
@@ -51,7 +54,6 @@ fun WellnessScreen(navController: NavController) {
                 .padding(16.dp)
         ) {
 
-            // TOP BAR
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -62,12 +64,8 @@ fun WellnessScreen(navController: NavController) {
                 }
 
                 Row {
-                    IconButton(onClick = { }) {
-
-                    }
-                    IconButton(onClick = { }) {
-
-                    }
+                    IconButton(onClick = { }) {}
+                    IconButton(onClick = { }) {}
                 }
             }
 
@@ -88,28 +86,39 @@ fun WellnessScreen(navController: NavController) {
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(140.dp)
+                    .height(180.dp)
                     .background(
                         color = Color.LightGray,
                         shape = RoundedCornerShape(20.dp)
                     )
-                    .padding(16.dp)
             ) {
                 Column {
-                    Text("Daily Wellness Check", color = Color.Black)
-
-                    Spacer(modifier = Modifier.height(10.dp))
-
-                    LinearProgressIndicator(
-                        progress = { 0.8f },
-                        modifier = Modifier.fillMaxWidth(),
-                        color = Color.White,
-                        trackColor = Color.Gray
+                    Image(
+                        painter = painterResource(id = R.drawable.img_18),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(80.dp)
+                            .clip(RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp)),
+                        contentScale = ContentScale.Crop
                     )
 
-                    Spacer(modifier = Modifier.height(8.dp))
+                    Column(modifier = Modifier.padding(16.dp)) {
+                        Text("Daily Wellness Check", color = Color.Black)
 
-                    Text("You’re doing great today!", color = Color.Black)
+                        Spacer(modifier = Modifier.height(10.dp))
+
+                        LinearProgressIndicator(
+                            progress = { 0.8f },
+                            modifier = Modifier.fillMaxWidth(),
+                            color = Color.White,
+                            trackColor = Color.Gray
+                        )
+
+                        Spacer(modifier = Modifier.height(8.dp))
+
+                        Text("You’re doing great today!", color = Color.Black)
+                    }
                 }
             }
 
@@ -152,15 +161,19 @@ fun WellnessScreen(navController: NavController) {
                             modifier = Modifier.padding(16.dp),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Icon(
-                                tip.icon,
+
+                            Image(
+                                painter = painterResource(id = tip.imageRes),
                                 contentDescription = null,
-                                tint = Color.Black
+                                modifier = Modifier
+                                    .size(50.dp)
+                                    .clip(CircleShape),
+                                contentScale = ContentScale.Crop
                             )
 
                             Spacer(modifier = Modifier.width(12.dp))
 
-                            Column {
+                            Column(modifier = Modifier.weight(1f)) {
                                 Text(
                                     tip.title,
                                     fontSize = 16.sp,
@@ -173,6 +186,12 @@ fun WellnessScreen(navController: NavController) {
                                     color = Color.DarkGray
                                 )
                             }
+
+                            Icon(
+                                tip.icon,
+                                contentDescription = null,
+                                tint = Color.Black
+                            )
                         }
                     }
                 }

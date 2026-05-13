@@ -1,7 +1,7 @@
 package com.periz.learnloop.ui.screens.StudentCommunity
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -13,20 +13,24 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.periz.learnloop.navigation.ROUT_HOME
+import com.periz.learnloop.R
 import com.periz.learnloop.ui.theme.Pink80
 
 data class CommunityPost(
     val user: String,
     val topic: String,
     val message: String,
-    val replies: Int
+    val replies: Int,
+    val imageRes: Int
 )
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -34,14 +38,14 @@ data class CommunityPost(
 fun StudentCommunityScreen(navController: NavController) {
 
     val posts = listOf(
-        CommunityPost("Periz", "Mathematics Help", "Can someone explain integration by parts?", 12),
-        CommunityPost("Moses", "Computer Science", "Best resources to learn Kotlin for beginners?", 8),
-        CommunityPost("Dorah", "Physics Discussion", "How do you solve projectile motion problems?", 15),
-        CommunityPost("Adam", "Exam Motivation", "How do you stay focused during revision week?", 20)
+        CommunityPost("Periz", "Mathematics Help", "Can someone explain integration by parts?", 12, R.drawable.img_28),
+        CommunityPost("Moses", "Computer Science", "Best resources to learn Kotlin for beginners?", 8, R.drawable.img_30),
+        CommunityPost("Dorah", "Physics Discussion", "How do you solve projectile motion problems?", 15, R.drawable.img_29),
+        CommunityPost("Adam", "Exam Motivation", "How do you stay focused during revision week?", 20, R.drawable.img_31)
     )
 
     Scaffold(
-        containerColor = Pink80   // background stays same
+        containerColor = Pink80
     ) { padding ->
 
         Column(
@@ -63,9 +67,7 @@ fun StudentCommunityScreen(navController: NavController) {
                 }
 
                 Row {
-
                     IconButton(onClick = { }) { }
-
                     IconButton(onClick = { }) { }
                 }
             }
@@ -86,17 +88,31 @@ fun StudentCommunityScreen(navController: NavController) {
 
             Spacer(modifier = Modifier.height(16.dp))
 
+            // Top decorative card with image
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(140.dp)
+                    .height(170.dp)
                     .background(
                         color = Color.LightGray,
                         shape = RoundedCornerShape(22.dp)
                     )
-                    .padding(16.dp)
             ) {
-                Column {
+                Image(
+                    painter = painterResource(id = R.drawable.img_27),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(85.dp)
+                        .clip(RoundedCornerShape(topStart = 22.dp, topEnd = 22.dp)),
+                    contentScale = ContentScale.Crop
+                )
+
+                Column(
+                    modifier = Modifier
+                        .align(Alignment.BottomStart)
+                        .padding(16.dp)
+                ) {
                     Text("Active Members", color = Color.Black)
                     Text("2,450+ Students", color = Color.Black, fontSize = 22.sp)
                     Text(
@@ -144,18 +160,15 @@ fun StudentCommunityScreen(navController: NavController) {
                         Column(modifier = Modifier.padding(16.dp)) {
 
                             Row(verticalAlignment = Alignment.CenterVertically) {
-                                Surface(
-                                    shape = CircleShape,
-                                    color = Color.LightGray,
-                                    modifier = Modifier.size(40.dp)
-                                ) {
-                                    Box(contentAlignment = Alignment.Center) {
-                                        Text(
-                                            post.user.first().toString(),
-                                            color = Color.Black
-                                        )
-                                    }
-                                }
+
+                                Image(
+                                    painter = painterResource(id = post.imageRes),
+                                    contentDescription = null,
+                                    modifier = Modifier
+                                        .size(45.dp)
+                                        .clip(CircleShape),
+                                    contentScale = ContentScale.Crop
+                                )
 
                                 Spacer(Modifier.width(10.dp))
 

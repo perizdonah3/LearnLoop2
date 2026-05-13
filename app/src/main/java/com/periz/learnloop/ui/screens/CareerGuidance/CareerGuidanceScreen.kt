@@ -1,5 +1,6 @@
 package com.periz.learnloop.ui.screens.CareerGuidance
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -22,29 +23,33 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.periz.learnloop.R
 import com.periz.learnloop.ui.theme.Pink80
 
 data class CareerFeature(
     val title: String,
     val description: String,
-    val icon: ImageVector
+    val icon: ImageVector,
+    val imageRes: Int
 )
 
 @Composable
 fun CareerHubScreen(navHostController: NavHostController) {
 
     val features = listOf(
-        CareerFeature("Career Quiz", "Discover careers that fit you", Icons.Default.Psychology),
-        CareerFeature("Internships", "Find student-friendly internships", Icons.Default.Work),
-        CareerFeature("Scholarships", "Explore funding opportunities", Icons.Default.School),
-        CareerFeature("CV Builder", "Create your professional CV", Icons.Default.Description),
-        CareerFeature("Courses", "Get course recommendations", Icons.Default.MenuBook),
-        CareerFeature("Trends", "See what's in demand", Icons.Default.TrendingUp)
+        CareerFeature("Career Quiz", "Discover careers that fit you", Icons.Default.Psychology, R.drawable.img_11),
+        CareerFeature("Internships", "Find student-friendly internships", Icons.Default.Work, R.drawable.img_18),
+        CareerFeature("Scholarships", "Explore funding opportunities", Icons.Default.School, R.drawable.img_3),
+        CareerFeature("CV Builder", "Create your professional CV", Icons.Default.Description, R.drawable.img_17),
+        CareerFeature("Courses", "Get course recommendations", Icons.Default.MenuBook, R.drawable.img_23),
+        CareerFeature("Trends", "See what's in demand", Icons.Default.TrendingUp, R.drawable.img_15)
     )
 
     Scaffold(
@@ -59,7 +64,6 @@ fun CareerHubScreen(navHostController: NavHostController) {
                 .padding(horizontal = 16.dp, vertical = 12.dp)
         ) {
 
-            // Top Bar
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -77,7 +81,6 @@ fun CareerHubScreen(navHostController: NavHostController) {
                 )
             }
 
-            // Header text
             Text(
                 text = "Career Hub ",
                 fontSize = 26.sp,
@@ -95,7 +98,6 @@ fun CareerHubScreen(navHostController: NavHostController) {
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Score card
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(20.dp)
@@ -136,7 +138,6 @@ fun CareerHubScreen(navHostController: NavHostController) {
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Grid section
             LazyVerticalGrid(
                 columns = GridCells.Fixed(2),
                 modifier = Modifier.weight(1f),
@@ -147,48 +148,57 @@ fun CareerHubScreen(navHostController: NavHostController) {
 
                 items(features) { feature ->
 
-                    // 🔥 ONLY CHANGE: CARD IS NOW WHITE
                     Card(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(155.dp)
+                            .height(170.dp)
                             .clickable { },
                         shape = RoundedCornerShape(20.dp),
                         colors = CardDefaults.cardColors(
-                            containerColor = Color.White   // ✅ FIX HERE
+                            containerColor = Color.White
                         ),
                         elevation = CardDefaults.cardElevation(5.dp)
                     ) {
 
                         Column(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(14.dp),
-                            horizontalAlignment = Alignment.Start
+                            modifier = Modifier.fillMaxSize()
                         ) {
 
-                            Icon(
-                                imageVector = feature.icon,
-                                contentDescription = feature.title,
-                                tint = Color.Black,
-                                modifier = Modifier.size(30.dp)
+                            Image(
+                                painter = painterResource(id = feature.imageRes),
+                                contentDescription = null,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(65.dp),
+                                contentScale = ContentScale.Crop
                             )
 
-                            Spacer(modifier = Modifier.height(10.dp))
+                            Column(
+                                modifier = Modifier.padding(12.dp)
+                            ) {
+                                Icon(
+                                    imageVector = feature.icon,
+                                    contentDescription = feature.title,
+                                    tint = Color.Black,
+                                    modifier = Modifier.size(28.dp)
+                                )
 
-                            Text(
-                                text = feature.title,
-                                style = MaterialTheme.typography.titleMedium,
-                                color = Color.Black
-                            )
+                                Spacer(modifier = Modifier.height(8.dp))
 
-                            Spacer(modifier = Modifier.height(6.dp))
+                                Text(
+                                    text = feature.title,
+                                    style = MaterialTheme.typography.titleMedium,
+                                    color = Color.Black
+                                )
 
-                            Text(
-                                text = feature.description,
-                                fontSize = 12.sp,
-                                color = Color.DarkGray
-                            )
+                                Spacer(modifier = Modifier.height(4.dp))
+
+                                Text(
+                                    text = feature.description,
+                                    fontSize = 12.sp,
+                                    color = Color.DarkGray
+                                )
+                            }
                         }
                     }
                 }

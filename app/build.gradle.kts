@@ -60,6 +60,8 @@ dependencies {
     implementation("com.google.firebase:firebase-firestore-ktx")
     implementation("com.google.firebase:firebase-analytics-ktx")
     implementation("com.google.code.gson:gson:2.10.1")
+    implementation("com.cloudinary:cloudinary-android:2.3.1")
+    implementation("io.coil-kt:coil-compose:2.6.0")
 
     // ================= OTHER =================
     implementation("androidx.datastore:datastore-preferences:1.1.1")

@@ -1,5 +1,9 @@
 package com.periz.learnloop.ui.screens.Profile
 
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -10,86 +14,124 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.periz.learnloop.navigation.ROUT_HOME
-import com.periz.learnloop.navigation.ROUT_SETTINGS
+import coil.compose.AsyncImage
+import com.google.firebase.firestore.FirebaseFirestore
+import com.periz.learnloop.R
+import com.periz.learnloop.models.CloudinaryManager
 import com.periz.learnloop.ui.theme.Pink80
 
 @Composable
 fun ProfileScreen(navController: NavHostController) {
 
+    val context = LocalContext.current
+    val db = FirebaseFirestore.getInstance()
+
+    var imageUrl by remember { mutableStateOf("") }
+    var email by remember { mutableStateOf("") }
+    var institution by remember { mutableStateOf("") }
+    var skills by remember { mutableStateOf("") }
+
+    var isEditing by remember { mutableStateOf(false) }
+
+    val userId = "demoUser" // later replace with real auth user id
+
+    // LOAD DATA FROM FIREBASE
+    LaunchedEffect(Unit) {
+        db.collection("users").document(userId)
+            .get()
+            .addOnSuccessListener { doc ->
+                if (doc.exists()) {
+                    email = doc.getString("email") ?: ""
+                    institution = doc.getString("institution") ?: ""
+                    skills = doc.getString("skills") ?: ""
+                    imageUrl = doc.getString("imageUrl") ?: ""
+                }
+            }
+    }
+
+    val imagePickerLauncher =
+        rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
+            uri?.let {
+                CloudinaryManager.uploadImage(
+                    context = context,
+                    uri = it,
+                    onSuccess = { uploadedUrl ->
+                        imageUrl = uploadedUrl
+
+                        // SAVE IMAGE URL
+                        db.collection("users").document(userId)
+                            .update("imageUrl", uploadedUrl)
+                    },
+                    onError = {}
+                )
+            }
+        }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(color = Pink80)
+            .background(Pink80)
             .systemBarsPadding()
             .verticalScroll(rememberScrollState())
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
-        // Top bar
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 14.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Start
         ) {
             Icon(
                 imageVector = Icons.Default.ArrowBack,
-                contentDescription = "Back",
+                contentDescription = null,
                 modifier = Modifier.clickable {
                     navController.popBackStack()
-                },
-                tint = Color.Black
+                }
             )
-
-
-
-
         }
 
         Box(
             modifier = Modifier
                 .size(110.dp)
                 .clip(CircleShape)
-                .background(Color.LightGray.copy(alpha = 0.4f)),
+                .clickable { imagePickerLauncher.launch("image/*") },
             contentAlignment = Alignment.Center
         ) {
-            Icon(
-                imageVector = Icons.Default.Person,
-                contentDescription = "Profile",
-                tint = Color.Black,
-                modifier = Modifier.size(60.dp)
-            )
+            if (imageUrl.isNotEmpty()) {
+                AsyncImage(
+                    model = imageUrl,
+                    contentDescription = null,
+                    modifier = Modifier.fillMaxSize(),
+                    contentScale = ContentScale.Crop
+                )
+            } else {
+                Image(
+                    painter = painterResource(id = R.drawable.img_2),
+                    contentDescription = null,
+                    modifier = Modifier.fillMaxSize(),
+                    contentScale = ContentScale.Crop
+                )
+            }
         }
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        Text(
-            text = "Periz Donah",
-            color = Color.Black,
-            fontSize = 24.sp,
-            fontWeight = FontWeight.Bold
-        )
 
-        Text(
-            text = "Software Developer",
-            color = Color.Black,
-            fontSize = 17.sp
-        )
 
         Spacer(modifier = Modifier.height(22.dp))
 
@@ -103,86 +145,92 @@ fun ProfileScreen(navController: NavHostController) {
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
 
-                ProfileItem(
-                    icon = Icons.Default.Email,
-                    title = "Email",
-                    subtitle = "perizdonah@example.com"
-                )
+                EditableProfileItem(
+                    Icons.Default.Email,
+                    "Email",
+                    email,
+                    isEditing
+                ) { email = it }
 
-                ProfileItem(
-                    icon = Icons.Default.School,
-                    title = "Institution",
-                    subtitle = "LearnLoop Academy"
-                )
+                EditableProfileItem(
+                    Icons.Default.School,
+                    "Institution",
+                    institution,
+                    isEditing
+                ) { institution = it }
 
-                ProfileItem(
-                    icon = Icons.Default.Edit,
-                    title = "Skills",
-                    subtitle = "Junior Software Developer"
-                )
+                EditableProfileItem(
+                    Icons.Default.Edit,
+                    "Skills",
+                    skills,
+                    isEditing
+                ) { skills = it }
             }
         }
 
         Spacer(modifier = Modifier.height(20.dp))
 
-        // 🔥 FIXED BUTTON (NO BLUE)
         Button(
             onClick = {
-                navController.navigate(ROUT_SETTINGS)
+                if (isEditing) {
+                    // SAVE TO FIRESTORE
+                    val data = hashMapOf(
+                        "email" to email,
+                        "institution" to institution,
+                        "skills" to skills,
+                        "imageUrl" to imageUrl
+                    )
+
+                    db.collection("users").document(userId)
+                        .set(data)
+                }
+
+                isEditing = !isEditing
             },
             shape = RoundedCornerShape(16.dp),
             modifier = Modifier.fillMaxWidth(),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Color.Black,
-                contentColor = Color.White
-            )
+            colors = ButtonDefaults.buttonColors(containerColor = Color.Black)
         ) {
-            Icon(Icons.Default.Edit, contentDescription = "Edit", tint = Color.White)
+            Icon(Icons.Default.Edit, contentDescription = null)
             Spacer(modifier = Modifier.width(8.dp))
-            Text("Edit Profile", color = Color.White)
+            Text(if (isEditing) "Save Profile" else "Edit Profile")
         }
-
-        Spacer(modifier = Modifier.height(12.dp))
     }
 }
 
 @Composable
-fun ProfileItem(
+fun EditableProfileItem(
     icon: ImageVector,
     title: String,
-    subtitle: String
+    value: String,
+    isEditing: Boolean,
+    onValueChange: (String) -> Unit
 ) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier.fillMaxWidth()
-    ) {
-        Icon(
-            imageVector = icon,
-            contentDescription = title,
-            tint = Color.Black,
-            modifier = Modifier.size(28.dp)
-        )
+    Row(verticalAlignment = Alignment.CenterVertically) {
+
+        Icon(icon, null)
 
         Spacer(modifier = Modifier.width(14.dp))
 
-        Column(modifier = Modifier.weight(1f)) {
-            Text(
-                text = title,
-                color = Color.Black,
-                fontWeight = FontWeight.Bold,
-                fontSize = 17.sp
-            )
-            Text(
-                text = subtitle,
-                color = Color.Black,
-                fontSize = 15.sp
-            )
+        Column(modifier = Modifier.fillMaxWidth()) {
+
+            Text(title, fontWeight = FontWeight.Bold)
+
+            if (isEditing) {
+                OutlinedTextField(
+                    value = value,
+                    onValueChange = onValueChange,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            } else {
+                Text(value)
+            }
         }
     }
 }
 
-@Preview(showBackground = true)
+@Preview
 @Composable
-fun ProfileScreenPreview() {
+fun PreviewProfile() {
     ProfileScreen(rememberNavController())
 }

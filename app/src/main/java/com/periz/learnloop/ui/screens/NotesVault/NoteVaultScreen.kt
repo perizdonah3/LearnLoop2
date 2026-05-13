@@ -1,5 +1,6 @@
 package com.periz.learnloop.ui.screens.NotesVault
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -14,38 +15,41 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.periz.learnloop.navigation.ROUT_HOME
+import com.periz.learnloop.R
 import com.periz.learnloop.ui.theme.Pink80
 
 data class NoteItem(
     val title: String,
     val subject: String,
     val date: String,
-    val icon: ImageVector
+    val icon: ImageVector,
+    val image: Int
 )
 
 @Composable
 fun NoteVaultScreen(navController: NavController) {
 
     val notes = listOf(
-        NoteItem("Biology Revision", "Biology", "12 Apr 2026", Icons.Default.Science),
-        NoteItem("Programming Basics", "Computer Science", "15 Apr 2026", Icons.Default.Code),
-        NoteItem("Business Finance", "Business Studies", "18 Apr 2026", Icons.Default.AccountBalance),
-        NoteItem("Chemistry Formulas", "Chemistry", "20 Apr 2026", Icons.Default.Calculate),
-        NoteItem("Algebra & Calculus", "Mathematics", "22 Apr 2026", Icons.Default.Functions),
-        NoteItem("Data Structures", "Computer Science", "24 Apr 2026", Icons.Default.Memory),
-        NoteItem("Mechanics & Motion", "Physics", "26 Apr 2026", Icons.Default.Science)
+        NoteItem("Biology Revision", "Biology", "12 Apr 2026", Icons.Default.Science, R.drawable.img_9),
+        NoteItem("Programming Basics", "Computer Science", "15 Apr 2026", Icons.Default.Code, R.drawable.img_10),
+        NoteItem("Business Finance", "Business Studies", "18 Apr 2026", Icons.Default.AccountBalance, R.drawable.img_11),
+        NoteItem("Chemistry Formulas", "Chemistry", "20 Apr 2026", Icons.Default.Calculate, R.drawable.img_12),
+        NoteItem("Algebra & Calculus", "Mathematics", "22 Apr 2026", Icons.Default.Functions, R.drawable.img_13),
+        NoteItem("Data Structures", "Computer Science", "24 Apr 2026", Icons.Default.Memory, R.drawable.img_14),
+        NoteItem("Mechanics & Motion", "Physics", "26 Apr 2026", Icons.Default.Science, R.drawable.img_15)
     )
 
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(color = Pink80) // ✅ removed Pink80
+            .background(color = Pink80)
             .systemBarsPadding()
     ) {
 
@@ -69,19 +73,14 @@ fun NoteVaultScreen(navController: NavController) {
                         modifier = Modifier.clickable { navController.popBackStack() },
                         tint = Color.Black
                     )
-
-
-
-
                 }
             }
 
             item {
                 Text(
-                    text = "Notes Vault ",
+                    text = "Notes Vault",
                     fontSize = 28.sp,
-                    color = Color.Black,
-                    style = MaterialTheme.typography.headlineMedium
+                    color = Color.Black
                 )
             }
 
@@ -93,45 +92,33 @@ fun NoteVaultScreen(navController: NavController) {
                 )
             }
 
-            // ✅ fixed card (no fake gradient)
             item {
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(
-                            color = Color.LightGray,
-                            shape = RoundedCornerShape(20.dp)
-                        )
+                        .background(Color.LightGray, RoundedCornerShape(20.dp))
                         .padding(20.dp)
                 ) {
                     Column {
 
-                        Text(
-                            text = "Storage Used",
-                            color = Color.Black,
-                            fontSize = 18.sp
-                        )
+                        Text("Storage Used", color = Color.Black)
 
                         Spacer(modifier = Modifier.height(10.dp))
 
                         LinearProgressIndicator(
                             progress = { 0.55f },
                             modifier = Modifier.fillMaxWidth(),
-                            color = Color.White,          // ✅ visible progress
-                            trackColor = Color.Gray       // ✅ proper contrast
+                            color = Color.White,
+                            trackColor = Color.Gray
                         )
 
                         Spacer(modifier = Modifier.height(8.dp))
 
-                        Text(
-                            text = "5.5 GB of 10 GB",
-                            color = Color.Black
-                        )
+                        Text("5.5 GB of 10 GB", color = Color.Black)
                     }
                 }
             }
 
-            // Buttons (already correct, kept same)
             item {
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(10.dp),
@@ -142,9 +129,7 @@ fun NoteVaultScreen(navController: NavController) {
                         onClick = { },
                         modifier = Modifier.weight(1f),
                         shape = RoundedCornerShape(14.dp),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = Color.Black
-                        )
+                        colors = ButtonDefaults.buttonColors(containerColor = Color.Black)
                     ) {
                         Icon(Icons.Default.UploadFile, null, tint = Color.White)
                         Spacer(modifier = Modifier.width(6.dp))
@@ -170,48 +155,48 @@ fun NoteVaultScreen(navController: NavController) {
                 Text(
                     text = "Recent Notes",
                     color = Color.Black,
-                    style = MaterialTheme.typography.titleLarge
+                    fontSize = 20.sp
                 )
             }
 
             items(notes) { note ->
+
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(18.dp),
-                    elevation = CardDefaults.cardElevation(5.dp),
                     colors = CardDefaults.cardColors(containerColor = Color.White)
                 ) {
+
                     Row(
                         modifier = Modifier.padding(16.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
+
+                        // ✅ IMAGE ADDED (NO UI CHANGE)
+                        Image(
+                            painter = painterResource(id = note.image),
+                            contentDescription = null,
+                            modifier = Modifier
+                                .size(50.dp)
+                                .padding(end = 10.dp),
+                            contentScale = ContentScale.Crop
+                        )
+
                         Icon(
                             note.icon,
                             contentDescription = note.title,
                             tint = Color.Black,
-                            modifier = Modifier.size(34.dp)
+                            modifier = Modifier.size(30.dp)
                         )
 
-                        Spacer(modifier = Modifier.width(14.dp))
+                        Spacer(modifier = Modifier.width(12.dp))
 
                         Column(modifier = Modifier.weight(1f)) {
-                            Text(
-                                text = note.title,
-                                color = Color.Black,
-                                style = MaterialTheme.typography.titleMedium
-                            )
-                            Text(
-                                text = note.subject,
-                                color = Color.Black,
-                                fontSize = 15.sp
-                            )
+                            Text(note.title, color = Color.Black)
+                            Text(note.subject, color = Color.Black, fontSize = 14.sp)
                         }
 
-                        Text(
-                            text = note.date,
-                            color = Color.Black,
-                            fontSize = 13.sp
-                        )
+                        Text(note.date, color = Color.Black, fontSize = 13.sp)
                     }
                 }
             }
@@ -219,8 +204,8 @@ fun NoteVaultScreen(navController: NavController) {
     }
 }
 
-@Preview(showBackground = true)
+@Preview
 @Composable
-fun NoteVaultScreenPreview() {
+fun NoteVaultPreview() {
     NoteVaultScreen(rememberNavController())
 }

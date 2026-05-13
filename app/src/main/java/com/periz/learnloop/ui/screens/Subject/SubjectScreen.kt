@@ -1,5 +1,6 @@
 package com.periz.learnloop.ui.screens.Subject
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -12,21 +13,22 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.periz.learnloop.navigation.ROUT_HOME
-import com.periz.learnloop.navigation.ROUT_STUDYMATERIALS
-import com.periz.learnloop.navigation.ROUT_STUDYTIMER
+import com.periz.learnloop.R
 import com.periz.learnloop.ui.theme.Pink80
 
 data class SubjectItem(
     val name: String,
     val progress: Float,
-    val level: String
+    val level: String,
+    val imageRes: Int
 )
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -34,14 +36,13 @@ data class SubjectItem(
 fun SubjectScreen(navController: NavController) {
 
     val subjects = listOf(
-        SubjectItem("Mathematics", 0.8f, "Advanced"),
-        SubjectItem("Computer Science", 0.65f, "Intermediate"),
-        SubjectItem("Physics", 0.5f, "Intermediate"),
-        SubjectItem("Biology", 0.9f, "Expert"),
-        SubjectItem("Chemistry", 0.7f, "Advanced")
+        SubjectItem("Mathematics", 0.8f, "Advanced", R.drawable.img_19),
+        SubjectItem("Computer Science", 0.65f, "Intermediate", R.drawable.img_23),
+        SubjectItem("Physics", 0.5f, "Intermediate", R.drawable.img_17),
+        SubjectItem("Biology", 0.9f, "Expert", R.drawable.img_21),
+        SubjectItem("Chemistry", 0.7f, "Advanced", R.drawable.img_13)
     )
 
-    // ❌ Bottom navigation removed
     Scaffold { padding ->
 
         Box(
@@ -64,23 +65,23 @@ fun SubjectScreen(navController: NavController) {
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back", tint = Color.Black)
+                        Icon(
+                            Icons.Default.ArrowBack,
+                            contentDescription = "Back",
+                            tint = Color.Black
+                        )
                     }
 
                     Row {
-                        IconButton(onClick = { }) {
-
-                        }
-                        IconButton(onClick = { }) {
-
-                        }
+                        IconButton(onClick = { }) {}
+                        IconButton(onClick = { }) {}
                     }
                 }
 
                 Spacer(modifier = Modifier.height(10.dp))
 
                 Text(
-                    text = "Subjects ",
+                    text = "Subjects",
                     fontSize = 30.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color.Black
@@ -90,6 +91,18 @@ fun SubjectScreen(navController: NavController) {
                     text = "Track your learning journey and achievements",
                     fontSize = 16.sp,
                     color = Color.Black
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                // top attractive image
+                Image(
+                    painter = painterResource(id = R.drawable.img_3),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(180.dp),
+                    contentScale = ContentScale.Crop
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
@@ -140,10 +153,13 @@ fun SubjectCard(subject: SubjectItem) {
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Icon(
-                    Icons.Default.MenuBook,
-                    contentDescription = null,
-                    tint = Color.White
+
+                Image(
+                    painter = painterResource(id = subject.imageRes),
+                    contentDescription = subject.name,
+                    modifier = Modifier
+                        .size(50.dp),
+                    contentScale = ContentScale.Crop
                 )
 
                 Spacer(modifier = Modifier.width(10.dp))
@@ -154,7 +170,11 @@ fun SubjectCard(subject: SubjectItem) {
                         fontWeight = FontWeight.Bold,
                         color = Color.Black
                     )
-                    Text(subject.level, color = Color.Black, fontSize = 14.sp)
+                    Text(
+                        subject.level,
+                        color = Color.Black,
+                        fontSize = 14.sp
+                    )
                 }
 
                 Icon(
@@ -170,7 +190,7 @@ fun SubjectCard(subject: SubjectItem) {
                 progress = { subject.progress },
                 modifier = Modifier.fillMaxWidth(),
                 color = Color.Black,
-                trackColor = Color.Black
+                trackColor = Color.LightGray
             )
 
             Spacer(modifier = Modifier.height(6.dp))
